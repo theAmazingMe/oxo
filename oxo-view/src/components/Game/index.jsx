@@ -48,7 +48,8 @@ const Game = () => {
     },
     "joinGame": (event) => {
       event.preventDefault();
-      refresh(selectedGameId.val)
+      refresh(selectedGameId.val);
+      window.location.reload();
     },
     "createGame": (event) => {
       event.preventDefault();
