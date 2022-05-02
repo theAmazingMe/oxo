@@ -1,0 +1,104 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  background-image: url(./sincerely-media-gPnHi8AmO5k-unsplash.jpg);
+  margin: 20px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+#generalContainer{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px dotted #999;
+  float: left;
+  font-size: 8vh;
+  font-weight: bold;
+  line-height: 34px;
+  height: 10vh;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 10vh;
+  transition: all 0.3s ease-in-out;
+  border-color:lightgrey;
+
+  &:focus {
+    outline: none;
+  }
+  &:hover{
+    border-color:transparent;
+    box-shadow: 0 0 10px #bbb;
+    transform: scale(1.1) rotate(4deg);
+  }
+}
+
+#title{
+  background:dodgerblue;
+}
+
+#game-container{
+  min-width: 40vh;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.o-signed:after {
+  content: 'O';
+  color:salmon;
+}
+.x-signed:after {
+  content: 'X';
+  color:dodgerblue;
+}
+
+.game-not-found{
+  background:#aaa !important;
+    border-radius:3px;
+    color:#777;
+}
+.game-found{
+  background:#dfd !important;
+  color:#4a4;
+}
+
+
+.card {
+  padding:1em;
+  margin: 1em .5em;
+}
+
+#feedbacks {
+  background-color:black;
+  span {
+    color: white;
+    font-size: 16pt;
+  }
+}
