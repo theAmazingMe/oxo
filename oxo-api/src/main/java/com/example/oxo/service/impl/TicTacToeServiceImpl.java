@@ -86,11 +86,7 @@ public class TicTacToeServiceImpl implements TicTacToeService{
         getStatus(gameId).setPlayers(players);
         return getStatus(gameId);
     }
-    @Override
-    public void turnCountUp(Integer id) {
-    	GameStatusDTO status = getStatus(id);
-    	status.setTurnCount(status.getTurnCount() + 1);
-    }
+
     @Override
     public GameStatusDTO resetPlayersScores(Integer id) {
     	GameStatusDTO status = getStatus(id);
