@@ -5,7 +5,7 @@ Table of content
 [TOC]
 ----------------------------------------------------------------
 
-# Product architecture
+# 1. Product architecture
 - **oxo-api** (API)
   **Java Spring** application that handles all the game's logic. the source code is compiled using **JDK 16**
   - Unit tests.
@@ -13,19 +13,19 @@ Table of content
 - **oxo-view** (UI Client)
   **React js** application that gives possibilities to interact with the API.
 
-# Functionalities
+# 2. Functionalities
 - Create a new game at any moment
 - Join / fetch a created game and load its current state
 - Play the game
 - Take a revange after a game ended either on a victory/loss or either on a tie/draw.
 - Reset scores and start with 0 loss and 0 victory for both players.
 
-# Features
+# 3. Features
 - The UI adapts to the game's actual state
 - The game displays the scores at the end of a game.
 
 
-# Getting started
+# 4. Getting started
 
 1. Run the maven project:
    navigate to the root location of the maven project (in oxo folder) and run this command 
