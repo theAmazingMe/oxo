@@ -1,7 +1,7 @@
 package com.example.oxo.service;
 
-import com.example.oxo.model.DTO.CreatePlayersDTO;
-import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.model.CreatePlayersDTO;
+import com.example.oxo.model.GameStatusDTO;
 
 public interface PlayerService {
 

@@ -3,12 +3,12 @@ package com.example.oxo.service.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.model.GameStatusDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.oxo.business.Player;
-import com.example.oxo.model.DTO.CreatePlayersDTO;
+import com.example.oxo.model.CreatePlayersDTO;
 import com.example.oxo.service.PlayerService;
 import com.example.oxo.service.TicTacToeService;
 

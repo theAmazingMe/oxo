@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.oxo.business.Player;
 import com.example.oxo.exception.ResourceNotFoundException;
-import com.example.oxo.model.DTO.ConclusionDTO;
-import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.model.ConclusionDTO;
+import com.example.oxo.model.GameStatusDTO;
 import com.example.oxo.service.TicTacToeService;
 
 @Service

@@ -1,4 +1,4 @@
-package com.example.oxo.model.DTO;
+package com.example.oxo.model;
 
 import com.example.oxo.model.enums.ConclusionType;
 import lombok.Data;

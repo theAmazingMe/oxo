@@ -4,7 +4,7 @@ const fetchGameStatus = async () => {
   const gameId = new URLSearchParams(queryString).get("gameId");
   const id = gameId | 0;
 
-  const res = await fetch('/api/oxo/' + id, {
+  const res = await fetch('http://localhost:8080/api/oxo/' + id, {
     method: "GET",
     mode: "cors",
     headers: { 'Content-Type': 'application/json' }
@@ -16,7 +16,7 @@ const fetchGameStatus = async () => {
 
 const placeSymbole = (status, conclusion, i, j) => {
   requestTheApi(
-    '/api/oxo',
+    'http://localhost:8080/api/oxo',
     'POST',
     {
       "gameId": status.val.gameId,
@@ -38,7 +38,7 @@ const placeSymbole = (status, conclusion, i, j) => {
 
 const createNewGame = (conclusion, status, refresh) => {
   requestTheApi(
-    '/api/oxo',
+    'http://localhost:8080/api/oxo',
     'POST',
     { "action": "INIT" },
     (data) => {
@@ -50,7 +50,7 @@ const createNewGame = (conclusion, status, refresh) => {
 
 const takeRevenge = (status, conclusion) => {
   requestTheApi(
-    '/api/oxo',
+    'http://localhost:8080/api/oxo',
     'POST',
     {
       "gameId": status.val.gameId,
@@ -64,7 +64,7 @@ const takeRevenge = (status, conclusion) => {
 
 const switchTurns = (status) => {
   requestTheApi(
-    '/api/oxo',
+    'http://localhost:8080/api/oxo',
     'POST',
     {
       "gameId": status.val.gameId,
@@ -76,7 +76,7 @@ const switchTurns = (status) => {
 }
 const resetScore = (status) => {
   requestTheApi(
-    '/api/oxo',
+    'http://localhost:8080/api/oxo',
     'POST',
     {
       "gameId": status.val.gameId,

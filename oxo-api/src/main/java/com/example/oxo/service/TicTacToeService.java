@@ -3,7 +3,7 @@ package com.example.oxo.service;
 import java.util.List;
 
 import com.example.oxo.business.Player;
-import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.model.GameStatusDTO;
 
 public interface TicTacToeService {
 

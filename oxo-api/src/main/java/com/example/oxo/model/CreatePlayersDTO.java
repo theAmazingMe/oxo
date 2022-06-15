@@ -1,4 +1,4 @@
-package com.example.oxo.model.DTO;
+package com.example.oxo.model;
 
 import lombok.Data;
 
