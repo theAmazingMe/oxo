@@ -2,7 +2,7 @@ package com.example.oxo.service.impl;
 
 import com.example.oxo.business.Player;
 import com.example.oxo.exception.IllegalMoveException;
-import com.example.oxo.model.ConclusionDTO;
+import com.example.oxo.model.DTO.ConclusionDTO;
 import com.example.oxo.model.enums.ConclusionType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.example.oxo.business.Move.moveFrom;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -105,6 +106,19 @@ class GamePlaythroughImplGameOverTest extends AbstractGameAnalyserTest {
     }
 
     @Test
+    @DisplayName("A game can be won on the descending diagonal, placing the last in the NE corner")
+    void isWinningDescendingDiagonalWithMatPlaced() {
+        ConclusionDTO conclusion = this.playAGame(new int[][]{
+                {1,0},{1,1},{2,1},  //      O | X | .
+                {2,2},{1,2},{0,0}   // =>   . | O | X
+                                    //      . | X | O
+        });
+
+        assertThat(conclusion.getMessage(),matchesPattern(Pattern.compile(".*O.*aligned.*desc.*diag.*",CASE_INSENSITIVE)));
+        assertEquals(conclusion.getType(), ConclusionType.FINISHED);
+    }
+
+    @Test
     @DisplayName("The winner should have his count of victories increment. But the loser his/her loss count")
     void test7() {
         test6();
@@ -121,7 +135,7 @@ class GamePlaythroughImplGameOverTest extends AbstractGameAnalyserTest {
         Exception exception = assertThrows(IllegalMoveException.class, () -> {
 
             test6();
-            gameAnalyser.placeSymbol(status.getGameId(),2,0);
+            gameAnalyser.placeSymbol(status.getGameId(),moveFrom(2,0));
 
         });
 
