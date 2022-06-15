@@ -40,8 +40,17 @@ Table of content
    $ npm install
    ```
    it will pull the dependencies from the node package manager. If you do not have node installed, you can find the official download platform [here (https://nodejs.org/en/download/)](https://nodejs.org/en/download/). Choose the latest Long Term Support (**LTS**) version.
-
-3. Run the UI application:
+3. Change the proxy in the React Project `package.json` file if you want to play on remote device such as a tablet.
+   
+   Change
+   ```json
+   "proxy": "http://127.0.0.1:8080",
+   ```
+   to
+   ```json
+   "proxy": "http://<my running server IP>:8080",
+   ```
+4. Run the UI application:
    run this command at the root location of the UI client (in oxo-view folder)
    ```cmd
    $ npm run start
