@@ -6,13 +6,14 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+import com.example.oxo.business.Move;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 
 import com.example.oxo.business.Player;
-import com.example.oxo.model.ConclusionDTO;
-import com.example.oxo.model.GameStatusDTO;
+import com.example.oxo.model.DTO.ConclusionDTO;
+import com.example.oxo.model.DTO.GameStatusDTO;
 import com.example.oxo.service.GameAnalyser;
 
 public abstract class AbstractGameAnalyserTest {
@@ -27,6 +28,7 @@ public abstract class AbstractGameAnalyserTest {
     public void startNewGameEachTime(){
     	gameAnalyser = new GameAnalyser();
         game = new TicTacToeServiceImpl();
+
         game.init();
         setField(gameAnalyser, "totalLines", 3);
         setField(gameAnalyser, "totalColumns", 3);
@@ -35,11 +37,12 @@ public abstract class AbstractGameAnalyserTest {
         
         setField(game, "lines", 3);
         setField(game, "cols", 3);
-    	
         
         Player p1 = new Player().setPseudo("John Do");
         Player p2 = new Player().setPseudo("John Smith");
+
         List<Player> players = Arrays.asList(p1,p2);
+
         status = game.startNewGame();
         game.initializePlayers(status.getGameId(), players);
 
@@ -50,24 +53,22 @@ public abstract class AbstractGameAnalyserTest {
     }
 
     protected ConclusionDTO playADraw(){
-        int[][] coords = {
+        int[][] positions = {
                 {0,0},{1,0},{2,0}, //    X | O | X
                 {0,2},{1,1},{2,2}, // => O | X | X
                 {1,2},{0,1},{2,1}  //    O | X | O
         };
 
-        return playAGame(coords);
+        return playAGame(positions);
     }
 
-    protected ConclusionDTO playAGame(int[][] coords){
+
+    protected ConclusionDTO playAGame(int[][] positions){
 
         ConclusionDTO conclusion = null;
 
-        for (int[] coord : coords ) {
-            int line = coord[0];
-            int column = coord[1];
-
-            conclusion = gameAnalyser.placeSymbol(status.getGameId(), line, column);
+        for (int[] position : positions ) {
+            conclusion = gameAnalyser.placeSymbol(status.getGameId(), Move.moveFromArray(position));
         }
 
         return conclusion;

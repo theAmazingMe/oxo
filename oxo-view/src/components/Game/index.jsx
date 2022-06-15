@@ -14,7 +14,7 @@ const Game = () => {
   });
 
   const hooks = useStates(
-    ["selectedGameId",0],["conclusion",{}],["status", null], ["pseudos",[{pseudo:""},{pseudo:""}]]
+    ["selectedGameId",0],["conclusion",{}],["status", null], ["pseudos",["",""]]
   );
   const { selectedGameId,status, pseudos, conclusion } = hooks;
 

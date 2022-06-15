@@ -1,12 +1,14 @@
 import requestTheApi from '../../helpers/request';
 
+
 const createPlayers = (status,pseudos,conclusion) => {
+    const listOfpseudos = pseudos.val || [];
     requestTheApi(
-      'http://localhost:8080/api/oxo/players',
+      '/api/oxo/players',
       'POST',
       { 
         "gameId": status.val.gameId,
-        "pseudos": pseudos.val,
+        "pseudos" : listOfpseudos ,
       },
       (data) => {
         if (data.conclusion.type === "INVALID") {

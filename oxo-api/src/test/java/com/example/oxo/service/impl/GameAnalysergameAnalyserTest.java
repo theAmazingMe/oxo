@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
+import static com.example.oxo.business.Move.moveFrom;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -18,7 +19,7 @@ public class GameAnalysergameAnalyserTest extends AbstractGameAnalyserTest {
     @Test
     @DisplayName("The first symbol to be placed is X")
     void test1() {
-        gameAnalyser.placeSymbol(status.getGameId(),0,0);
+        gameAnalyser.placeSymbol(status.getGameId(), moveFrom(0,0));
         Character placedSymbol = status.getGrid()[0][0];
 
         assertEquals(1, status.getTurnCount());
@@ -28,8 +29,8 @@ public class GameAnalysergameAnalyserTest extends AbstractGameAnalyserTest {
     @Test
     @DisplayName("O is placed after X is placed")
     void test2() {
-        gameAnalyser.placeSymbol(status.getGameId(),0,0);
-        gameAnalyser.placeSymbol(status.getGameId(),1,0);
+        gameAnalyser.placeSymbol(status.getGameId(),moveFrom(0,0));
+        gameAnalyser.placeSymbol(status.getGameId(),moveFrom(1,0));
         char placedSymbol = status.getGrid()[1][0];
 
         assertEquals(placedSymbol,'O');
@@ -39,8 +40,8 @@ public class GameAnalysergameAnalyserTest extends AbstractGameAnalyserTest {
     @DisplayName("It is impossible to play at a same position")
     void test3() {
         assertThrows(IllegalMoveException.class, () -> {
-            gameAnalyser.placeSymbol(status.getGameId(),0,0);
-            gameAnalyser.placeSymbol(status.getGameId(),0,0);
+            gameAnalyser.placeSymbol(status.getGameId(),moveFrom(0,0));
+            gameAnalyser.placeSymbol(status.getGameId(),moveFrom(0,0));
         });
     }
 
@@ -52,7 +53,7 @@ public class GameAnalysergameAnalyserTest extends AbstractGameAnalyserTest {
             playADraw();
 
             // the grid is already filled
-            gameAnalyser.placeSymbol(status.getGameId(),0,1);
+            gameAnalyser.placeSymbol(status.getGameId(),moveFrom(0,1));
         });
 
         assertThat(
