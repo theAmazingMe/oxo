@@ -16,18 +16,17 @@ public class GameExceptionImpl implements RESTExceptionHandler {
     @Override
     public Object onException(Exception ex){
         if(ex instanceof IllegalMoveException){
-            ConclusionDTO conclusion = new ConclusionDTO()
-                    .setType(ConclusionType.FAULTED)
-                    .setMessage(ex.getMessage());
 
-            return new GameStatusDTO().setConclusion(conclusion);
+            return GameStatusDTO.builder().conclusion(ConclusionDTO.builder()
+                    .type(ConclusionType.FAULTED)
+                    .message(ex.getMessage()))
+                    .build();
 
         }else if(ex instanceof ResourceNotFoundException){
-            ConclusionDTO conclusion = new ConclusionDTO()
-                    .setType(ConclusionType.NON_EXISTENT)
-                    .setMessage(String.format("No game could be found"));
 
-            return new GameStatusDTO().setConclusion(conclusion);
+            return GameStatusDTO.builder().conclusion( ConclusionDTO.builder()
+                    .type(ConclusionType.NON_EXISTENT)
+                    .message(String.format("No game could be found"))).build();
         }
         throw new RuntimeException(ex.getMessage());
     }

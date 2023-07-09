@@ -1,33 +1,42 @@
 package com.example.oxo.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.example.oxo.business.Move;
+import com.example.oxo.business.Player;
+import com.example.oxo.model.DTO.ConclusionDTO;
+import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.service.GameAnalyser;
+import com.example.oxo.service.PlayerService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.oxo.business.Move;
-import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import com.example.oxo.business.Player;
-import com.example.oxo.model.DTO.ConclusionDTO;
-import com.example.oxo.model.DTO.GameStatusDTO;
-import com.example.oxo.service.GameAnalyser;
-
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public abstract class AbstractGameAnalyserTest {
 	
     protected GameAnalyser gameAnalyser;
     protected TicTacToeServiceImpl game;
     protected GameStatusDTO status;
 
+    @Autowired
+    private PlayerService playerService;
+
 
     @BeforeEach
     @DisplayName("Setup a new game")
     public void startNewGameEachTime(){
     	gameAnalyser = new GameAnalyser();
-        game = new TicTacToeServiceImpl();
+        game = new TicTacToeServiceImpl(playerService);
 
         game.init();
         setField(gameAnalyser, "totalLines", 3);
@@ -38,8 +47,8 @@ public abstract class AbstractGameAnalyserTest {
         setField(game, "lines", 3);
         setField(game, "cols", 3);
         
-        Player p1 = new Player().setPseudo("John Do");
-        Player p2 = new Player().setPseudo("John Smith");
+        Player p1 = Player.builder().pseudo("John Do").build();
+        Player p2 = Player.builder().pseudo("John Smith").build();
 
         List<Player> players = Arrays.asList(p1,p2);
 
@@ -80,7 +89,7 @@ public abstract class AbstractGameAnalyserTest {
     		field.setAccessible(true);
     		field.set(instance, value);
 		} catch (Exception e) {
-			Assert.fail(e.getMessage());
+			fail(e.getMessage());
 		}
     }
 }

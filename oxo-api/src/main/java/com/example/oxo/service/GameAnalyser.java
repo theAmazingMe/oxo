@@ -1,21 +1,20 @@
 package com.example.oxo.service;
 
-import static com.example.oxo.model.enums.ConclusionType.*;
-import static com.example.oxo.model.enums.Direction.*;
-import static com.example.oxo.service.helpers.CustomMoveValidator.validatePlacement;
-
 import com.example.oxo.business.Move;
+import com.example.oxo.business.Player;
+import com.example.oxo.model.DTO.ConclusionDTO;
+import com.example.oxo.model.DTO.GameStatusDTO;
 import com.example.oxo.model.SearchDirection;
+import com.example.oxo.model.enums.Direction;
 import com.example.oxo.service.helpers.AlignmentStepper;
 import com.example.oxo.service.helpers.GridSearchAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.example.oxo.business.Player;
-import com.example.oxo.model.DTO.ConclusionDTO;
-import com.example.oxo.model.DTO.GameStatusDTO;
-import com.example.oxo.model.enums.Direction;
+import static com.example.oxo.model.enums.ConclusionType.*;
+import static com.example.oxo.model.enums.Direction.*;
+import static com.example.oxo.service.helpers.CustomMoveValidator.validatePlacement;
 
 @Service
 public class GameAnalyser {
@@ -69,22 +68,29 @@ public class GameAnalyser {
             boolean winning = algorithm.directNeighbourSearch(searchDirection, stepper);
 
             if (winning) {
-                String message = String.format("%c's aligned on the %s",
-                        symbol, direction.getName()
-                );
-
-                // it is GAME OVER
-                return new ConclusionDTO().setType(FINISHED)
-                        .setMessage(message);
+                return notifyWin(direction,symbol);
 
             } else if (gameStatus.getTurnCount() == 8) {
-                // We ended with no winner
-                return new ConclusionDTO().setType(DRAW).setMessage("This is a draw");
+                return notifyNoWinner();
             }
         }
 
-        return new ConclusionDTO().setType(ONGOING)
-                .setMessage("No player wins");
+        return ConclusionDTO.builder().type(ONGOING)
+                .message("No player wins").build();
+    }
+
+    private ConclusionDTO notifyNoWinner() {
+        return ConclusionDTO.builder().type(DRAW).message("This is a draw").build();
+    }
+
+    private ConclusionDTO notifyWin(Direction direction, char symbol) {
+        String message = String.format("%c's aligned on the %s",
+                symbol, direction.getName()
+        );
+
+        // it is GAME OVER
+        return ConclusionDTO.builder().type(FINISHED)
+                .message(message).build();
     }
 
     private ConclusionDTO onConclusion(GameStatusDTO gameStatus, ConclusionDTO conclusion, int turns) {

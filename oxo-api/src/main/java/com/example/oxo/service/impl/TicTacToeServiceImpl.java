@@ -1,90 +1,102 @@
 package com.example.oxo.service.impl;
 
-import static com.example.oxo.model.enums.ConclusionType.ONGOING;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.PostConstruct;
-
-import com.example.oxo.exception.PseudoConflictException;
-import com.example.oxo.exception.TooFewPseudoException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.example.oxo.business.Player;
 import com.example.oxo.exception.ResourceNotFoundException;
 import com.example.oxo.model.DTO.ConclusionDTO;
 import com.example.oxo.model.DTO.GameStatusDTO;
+import com.example.oxo.service.PlayerService;
 import com.example.oxo.service.TicTacToeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.example.oxo.model.enums.ConclusionType.ONGOING;
 
 @Service
 public class TicTacToeServiceImpl implements TicTacToeService{
 	
 	private Map<Integer, GameStatusDTO> storedGames;
 	
-	private AtomicInteger gameIdStore = new AtomicInteger(1);
+	private final AtomicInteger gameIdStore = new AtomicInteger(1);
+
+    private final PlayerService playerService;
 	
 	@Value("${game.dimension:3}")
 	private int lines; 
 	@Value("${game.dimension:3}")
 	private int cols;
 
+    @Autowired
+    TicTacToeServiceImpl(PlayerService playerService){
+        this.playerService = playerService;
+    }
+
 
     @PostConstruct
     public void init() {
+        gameIdStore.set(0);
     	storedGames = new HashMap<>();
     }
 
     @Override
     public GameStatusDTO startNewGame() {
-    	 ConclusionDTO actualConclusion = new ConclusionDTO().setType(ONGOING)
-         		.setMessage("New game started");
     	int id=gameIdStore.incrementAndGet();
-    	GameStatusDTO status = new GameStatusDTO()
-        		.setGameId(id)
-        		.setConclusion(actualConclusion)
-        		.setTurnCount(0)
-        		.setGrid(new Character[lines][cols]);
+    	GameStatusDTO status = buildNewGame(id);
     	
     	storedGames.put(id, status);
     	return status;
     }
+
+    private GameStatusDTO buildNewGame(int id) {
+        return GameStatusDTO.builder()
+                .gameId(id)
+                .conclusion(concludeGameStarted())
+                .turnCount(0)
+                .grid(new Character[lines][cols])
+                .build();
+    }
+
+    private ConclusionDTO concludeGameStarted(){
+        return ConclusionDTO.builder()
+                .type(ONGOING)
+                .message("New game started")
+                .build();
+    }
+
     @Override
     public GameStatusDTO startNewGame(Integer id) {
 
     	GameStatusDTO status = storedGames.get(id);
-        
-    	int totalPlayers = status.getPlayers() != null ? status.getPlayers().size():0;
-        if(totalPlayers != 2){
-            throw new IllegalArgumentException("Two players have to be set to play. Actual: "+totalPlayers);
-        }
-        
-        ConclusionDTO actualConclusion = new ConclusionDTO().setType(ONGOING)
-        		.setMessage("New game started");
 
-        status = new GameStatusDTO()
-        		.setGameId(id)
-        		.setConclusion(actualConclusion)
-        		.setTurnCount(0)
-                .setPlayers(status.getPlayers())
-        		.setGrid(new Character[lines][cols]);
+    	playerService.checkPlayersToCreate(status.getPlayers());
 
-        storedGames.put(id,status);
-        return status;
+        GameStatusDTO statusWithGame = buildAGame(id,status,concludeGameStarted());
+
+        storedGames.put(id,statusWithGame);
+        return statusWithGame;
     }
     @Override
     public GameStatusDTO initializePlayers(Integer gameId, List<Player> players) {
-    	if(players == null || players.size() != 2) {        	
-        	throw new TooFewPseudoException("Two players have to be set. currently " +
-        				(players == null ? 0 : players.size()));
-        }
-        
-        if(players.get(0).getPseudo().equals(players.get(1).getPseudo())) {
-            throw new PseudoConflictException("The two players have the same pseudo: "+players.get(0).getPseudo());
-        }
+        playerService.checkPlayersToCreate(playerService.getPseudos(players));
         getStatus(gameId).setPlayers(players);
         return getStatus(gameId);
+    }
+
+    private GameStatusDTO buildAGame(Integer gameId, GameStatusDTO status, ConclusionDTO conclusion){
+        return GameStatusDTO.builder()
+                .gameId(gameId)
+                .conclusion(conclusion)
+                .turnCount(0)
+                .players(status.getPlayers())
+                .grid(new Character[lines][cols])
+                .build();
     }
 
     @Override
@@ -95,12 +107,7 @@ public class TicTacToeServiceImpl implements TicTacToeService{
             p.setLoss(0);
         }
 
-        status = new GameStatusDTO()
-                .setGameId(id)
-                .setConclusion(status.getConclusion())
-                .setTurnCount(0)
-                .setPlayers(status.getPlayers())
-                .setGrid(new Character[lines][cols]);
+        status = buildAGame(id,status,status.getConclusion());
 
         storedGames.put(id,status);
         return status;
@@ -118,19 +125,15 @@ public class TicTacToeServiceImpl implements TicTacToeService{
     public GameStatusDTO switchTurns(Integer id) {
         GameStatusDTO status = storedGames.get(id);
 
-        // the stored players list is immutable
+        Collections.reverse(storedGames.get(id).getPlayers());
 
-        List<Player> players = new ArrayList<>(storedGames.get(id).getPlayers());
-        Collections.reverse(players);
+        GameStatusDTO alteredStatus = buildAGame(
+                id,
+                status,
+                status.getConclusion()
+        );
 
-        status = new GameStatusDTO()
-                .setGameId(id)
-                .setConclusion(status.getConclusion())
-                .setTurnCount(0)
-                .setPlayers(players)
-                .setGrid(new Character[lines][cols]);
-
-        storedGames.put(id,status);
-        return status;
+        storedGames.put(id,alteredStatus);
+        return alteredStatus;
     }
 }

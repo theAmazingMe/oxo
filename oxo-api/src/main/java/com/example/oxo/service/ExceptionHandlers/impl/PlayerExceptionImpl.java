@@ -16,11 +16,11 @@ public class PlayerExceptionImpl implements RESTExceptionHandler {
     @Override
     public Object onException(Exception ex) {
         if(ex instanceof PseudoConflictException || ex instanceof TooFewPseudoException){
-            ConclusionDTO conclusion = new ConclusionDTO()
-                    .setType(ConclusionType.INVALID)
-                    .setMessage(ex.getMessage());
 
-            return new GameStatusDTO().setConclusion(conclusion);
+            return GameStatusDTO.builder().conclusion(ConclusionDTO.builder()
+                    .type(ConclusionType.INVALID)
+                    .message(ex.getMessage()))
+                    .build();
         }
         throw new RuntimeException(ex.getMessage());
     }
